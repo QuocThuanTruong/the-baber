@@ -162,7 +162,7 @@ public class Common {
     }
 
     public static String formatShoppingItemName(String name) {
-        return name.length() > 13 ? new StringBuilder(name.substring(0, 10)).append("...").toString() : name;
+        return name.length() > 16 ? new StringBuilder(name.substring(0, 13)).append("...").toString() : name;
     }
 
     public static void updateToken(Context context, final String s) {
