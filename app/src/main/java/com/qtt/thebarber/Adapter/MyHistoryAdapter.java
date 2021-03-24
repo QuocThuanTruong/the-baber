@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.qtt.thebarber.Common.Common;
+import com.qtt.thebarber.Model.BarberService;
 import com.qtt.thebarber.Model.BookingInformation;
 import com.qtt.thebarber.databinding.LayoutHistoryBinding;
 
@@ -45,6 +49,28 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.MyVi
         holder.binding.tvSalonAddress.setText(bookingInformationList.get(position).getSalonAddress());
         holder.binding.tvSalonName.setText(bookingInformationList.get(position).getSalonName());
         holder.binding.tvBookingDate.setText(bookingInformationList.get(position).getTimestamp().toDate().toString());
+
+        ///AllSalon/Florida/Branch/0n7ikrtgQXW4EXhuJ0qy/Services
+        FirebaseFirestore.getInstance().collection("AllSalon")
+                .document(bookingInformationList.get(position).getCityBooking())
+                .collection("Branch")
+                .document(bookingInformationList.get(position).getSalonId())
+                .collection("Services")
+                .whereEqualTo("uid", bookingInformationList.get(position).getBarberServiceList().get(0))
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            BarberService barberService = documentSnapshot.toObject(BarberService.class);
+                            holder.binding.tvServiceName.setText(barberService.getName());
+                        }
+
+                    }
+
+                });
+
+
     }
 
     @Override
