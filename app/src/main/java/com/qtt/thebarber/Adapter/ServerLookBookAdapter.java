@@ -9,18 +9,18 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.qtt.thebarber.Model.Banner;
+import com.qtt.thebarber.Model.LookBook;
 import com.qtt.thebarber.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class LookBookAdapter extends RecyclerView.Adapter<LookBookAdapter.LookBookViewHolder> {
+public class ServerLookBookAdapter extends RecyclerView.Adapter<ServerLookBookAdapter.LookBookViewHolder> {
 
     Context context;
-    List<Banner> lookBookList;
+    List<LookBook> lookBookList;
 
-    public LookBookAdapter(Context context, List<Banner> lookBookList) {
+    public ServerLookBookAdapter(Context context, List<LookBook> lookBookList) {
         this.context = context;
         this.lookBookList = lookBookList;
     }
@@ -34,7 +34,7 @@ public class LookBookAdapter extends RecyclerView.Adapter<LookBookAdapter.LookBo
 
     @Override
     public void onBindViewHolder(@NonNull LookBookViewHolder holder, int position) {
-        Picasso.get().load(lookBookList.get(position).getImage()).into(holder.imgLookBook);
+        Picasso.get().load(lookBookList.get(position).getUrl()).into(holder.imgLookBook);
     }
 
     @Override

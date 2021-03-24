@@ -9,10 +9,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -20,8 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,9 +36,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.nex3z.notificationbadge.NotificationBadge;
 import com.qtt.thebarber.Adapter.HomeSliderAdapter;
-import com.qtt.thebarber.Adapter.LookBookAdapter;
+import com.qtt.thebarber.Adapter.ServerLookBookAdapter;
 import com.qtt.thebarber.BookingActivity;
 import com.qtt.thebarber.CartActivity;
 import com.qtt.thebarber.Common.Common;
@@ -55,22 +50,16 @@ import com.qtt.thebarber.Interface.IBookingInfoChangeListener;
 import com.qtt.thebarber.Interface.IBookingInfoLoadListener;
 import com.qtt.thebarber.Interface.ILookBookLoadListener;
 import com.qtt.thebarber.Interface.INotificationCountListener;
-import com.qtt.thebarber.MainActivity;
-import com.qtt.thebarber.Model.Banner;
 import com.qtt.thebarber.Model.BarberService;
 import com.qtt.thebarber.Model.BookingInformation;
+import com.qtt.thebarber.Model.LookBook;
 import com.qtt.thebarber.NotificationActivity;
-import com.qtt.thebarber.R;
 import com.qtt.thebarber.Service.PicassoImageLoadingService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 import dmax.dialog.SpotsDialog;
 import io.paperdb.Paper;
 import io.reactivex.SingleObserver;
@@ -440,11 +429,11 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
     private void loadLookBooks() {
         looBookRef.get()
                 .addOnCompleteListener(task -> {
-                    List<Banner> lookBookList = new ArrayList<>();
+                    List<LookBook> lookBookList = new ArrayList<>();
 
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot lookBookSnapShot : task.getResult()) {
-                            Banner lookBook = lookBookSnapShot.toObject(Banner.class);
+                            LookBook lookBook = lookBookSnapShot.toObject(LookBook.class);
                             lookBookList.add(lookBook);
                         }
                         iLookBookLoadListener.onLookBookLoadSuccess(lookBookList);
@@ -455,11 +444,11 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
     private void loadBanners() {
         bannerRef.get()
                 .addOnCompleteListener(task -> {
-                    List<Banner> bannerList = new ArrayList<>();
+                    List<LookBook> bannerList = new ArrayList<>();
 
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot bannerSnapShot : task.getResult()) {
-                            Banner banner = bannerSnapShot.toObject(Banner.class);
+                            LookBook banner = bannerSnapShot.toObject(LookBook.class);
                             bannerList.add(banner);
                         }
 
@@ -474,7 +463,7 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
     }
 
     @Override
-    public void onBannerLoadSuccess(List<Banner> bannerList) {
+    public void onBannerLoadSuccess(List<LookBook> bannerList) {
         binding.bannerSlider.setInterval(5000);
         binding.bannerSlider.setAdapter(new HomeSliderAdapter(bannerList));
     }
@@ -485,10 +474,10 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
     }
 
     @Override
-    public void onLookBookLoadSuccess(List<Banner> lookBookList) {
+    public void onLookBookLoadSuccess(List<LookBook> lookBookList) {
         binding.recyclerLookBook.setHasFixedSize(true);
         binding.recyclerLookBook.setLayoutManager(new LinearLayoutManager(getActivity()));
-        binding.recyclerLookBook.setAdapter(new LookBookAdapter(getActivity(), lookBookList));
+        binding.recyclerLookBook.setAdapter(new ServerLookBookAdapter(getActivity(), lookBookList));
     }
 
     @Override

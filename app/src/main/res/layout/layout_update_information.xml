@@ -13,7 +13,7 @@
         android:id="@+id/top_view"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/colorAccent2"/>
+        android:background="@color/colorPrimary"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
             android:layout_marginLeft="4dp"
             android:fontFamily="@font/gilroy_semibold"
             android:text="Please fill in your information"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@android:color/white"
             android:textSize="24sp" />
     </FrameLayout>
 

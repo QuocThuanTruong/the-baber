@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="18dp"
+    app:cardElevation="0dp"
     android:layout_marginTop="10dp"
     android:orientation="vertical">
 
@@ -95,6 +96,31 @@
                     android:id="@+id/tv_booking_time_text"
                     android:fontFamily="@font/gilroy_medium"
                     android:text="12:00 at 17/07/2000"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    app:tint="@color/colorAccent"
+                    android:src="@drawable/ic_baseline_chair_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_service_name"
+                    android:fontFamily="@font/gilroy_medium"
+                    android:text="Kelvin"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="4dp" />
 

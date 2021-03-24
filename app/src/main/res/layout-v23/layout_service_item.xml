@@ -4,6 +4,7 @@
     android:id="@+id/card_view_service"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardElevation="0dp"
     android:orientation="vertical"
     app:cardCornerRadius="20dp">
 

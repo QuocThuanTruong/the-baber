@@ -58,7 +58,7 @@ public class MySalonAdapter extends RecyclerView.Adapter<MySalonAdapter.SalonVie
                 for (CardView cardView : cardViewList)
                     cardView.setCardBackgroundColor(context.getResources().getColor(android.R.color.white));
 
-                cardViewList.get(position).setCardBackgroundColor(context.getResources().getColor(android.R.color.holo_orange_dark));
+                cardViewList.get(position).setCardBackgroundColor(context.getResources().getColor(R.color.colorCardSelected));
 
                 //Send flag to Booking Activity
                 EventBus.getDefault().post(new EnableNextButtonEvent(1, salonList.get(position)));

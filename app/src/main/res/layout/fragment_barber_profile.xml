@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorBackground"
     tools:context=".UpdateProfileActivity">
 
     <FrameLayout
@@ -14,10 +15,22 @@
         <View
             android:id="@+id/top_view"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="60dp"
             android:background="@color/colorPrimary"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/gilroy_semibold"
+            android:text="Barber profile"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
         <LinearLayout
+            android:layout_marginTop="60dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -57,7 +70,7 @@
                         android:textSize="22sp"
                         android:fontFamily="@font/gilroy_medium"
                         android:text="Name"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/colorPrimary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -66,7 +79,7 @@
                         android:textSize="18sp"
                         android:fontFamily="@font/gilroy_regular"
                         android:text="Phone"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/colorPrimary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -74,8 +87,8 @@
                         android:id="@+id/tv_barber_address"
                         android:textSize="18sp"
                         android:fontFamily="@font/gilroy_regular"
-                        android:text="Phone"
-                        android:textColor="@android:color/white"
+                        android:text="Address"
+                        android:textColor="@color/colorPrimary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -86,8 +99,16 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorAccent"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
             <TextView
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="12dp"
                 android:text="Look book"
@@ -99,8 +120,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_look_book"
                 android:layout_marginBottom="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

@@ -16,6 +16,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.qtt.thebarber.Adapter.MyLookBookAdapter;
 import com.qtt.thebarber.Common.Common;
+import com.qtt.thebarber.Common.SpacesItemDecoration;
 import com.qtt.thebarber.Model.LookBook;
 import com.qtt.thebarber.R;
 import com.qtt.thebarber.databinding.FragmentBarberProfileBinding;
@@ -67,6 +68,7 @@ public class BarberProfileFragment extends BottomSheetDialogFragment {
 
         binding.recyclerLookBook.setHasFixedSize(true);
         binding.recyclerLookBook.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        binding.recyclerLookBook.addItemDecoration(new SpacesItemDecoration(16));
 
         if (!Common.currentBarber.getAvatar().isEmpty()) {
             Picasso.get().load(Common.currentBarber.getAvatar()).error(R.drawable.user_avatar).into(binding.imgUserAvatar);

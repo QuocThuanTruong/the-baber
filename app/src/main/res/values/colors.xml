@@ -7,4 +7,5 @@
     <color name="colorBackground">#f2eeef</color>
     <color name="colorHomeBg">#DFDFDF</color>
     <color name="colorAccent2">#d08e63</color>
+    <color name="colorCardSelected">#99FCFF</color>
 </resources>

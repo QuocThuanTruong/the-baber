@@ -13,6 +13,7 @@ import com.qtt.thebarber.Common.Common;
 import com.qtt.thebarber.EventBus.EnableNextButtonEvent;
 import com.qtt.thebarber.Interface.IRecyclerItemSelectedListener;
 import com.qtt.thebarber.Model.BarberService;
+import com.qtt.thebarber.R;
 import com.qtt.thebarber.databinding.LayoutServiceItemBinding;
 import com.squareup.picasso.Picasso;
 
@@ -78,7 +79,7 @@ public class MyServiceAdapter extends RecyclerView.Adapter<MyServiceAdapter.MyVi
             for (CardView cardView : cardViewList)
                 cardView.setCardBackgroundColor(context.getResources().getColor(android.R.color.white));
 
-            cardViewList.get(position).setCardBackgroundColor(context.getResources().getColor(android.R.color.holo_orange_dark));
+            cardViewList.get(position).setCardBackgroundColor(context.getResources().getColor(R.color.colorCardSelected));
 
             //call event bus calc total price
             Common.selectedService = servicesList.get(position);

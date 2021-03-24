@@ -46,6 +46,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:progressTint="@color/colorAccent2"
+        android:secondaryProgressTint="@color/colorAccent2"
         android:numStars="5"
         android:rating="5" />
 

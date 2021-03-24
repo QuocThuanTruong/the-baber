@@ -20,6 +20,7 @@ import com.qtt.thebarber.Interface.IRecyclerItemSelectedListener;
 import com.qtt.thebarber.Model.Barber;
 import com.qtt.thebarber.R;
 import com.qtt.thebarber.databinding.LayoutBarberBinding;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -53,6 +54,10 @@ public class MyBarberAdapter extends RecyclerView.Adapter<MyBarberAdapter.Barber
         holder.binding.rtbBarber.setRating((float) (barberList.get(position).getRating() / ( barberList.get(position).getRatingTimes() == 0 ? 1 : barberList.get(position).getRatingTimes())));
         holder.binding.tvRatingTimes.setText(new StringBuilder(barberList.get(position).getRatingTimes() + "").append(" ratings").toString());
 
+        if (!barberList.get(position).getAvatar().isEmpty()) {
+            Picasso.get().load(barberList.get(position).getAvatar()).error(R.drawable.user_avatar).into(holder.binding.imgBarberAvt);
+        }
+
         if (!cardViewList.contains(holder.binding.cardViewBarber))
             cardViewList.add(holder.binding.cardViewBarber);
 
@@ -62,7 +67,7 @@ public class MyBarberAdapter extends RecyclerView.Adapter<MyBarberAdapter.Barber
                 for (CardView cardView : cardViewList)
                     cardView.setCardBackgroundColor(context.getResources().getColor(android.R.color.white));
 
-                cardViewList.get(position).setCardBackgroundColor(context.getResources().getColor(android.R.color.holo_blue_light));
+                cardViewList.get(position).setCardBackgroundColor(context.getResources().getColor(R.color.colorCardSelected));
 
                 //send flag to Booking Activity
                 EventBus.getDefault().postSticky(new EnableNextButtonEvent(3, barberList.get(position)));

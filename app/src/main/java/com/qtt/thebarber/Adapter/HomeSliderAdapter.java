@@ -1,6 +1,7 @@
 package com.qtt.thebarber.Adapter;
 
-import com.qtt.thebarber.Model.Banner;
+
+import com.qtt.thebarber.Model.LookBook;
 
 import java.util.List;
 
@@ -9,9 +10,9 @@ import ss.com.bannerslider.viewholder.ImageSlideViewHolder;
 
 public class HomeSliderAdapter extends SliderAdapter {
 
-    List<Banner> bannerList;
+    List<LookBook> bannerList;
 
-    public HomeSliderAdapter(List<Banner> bannerList) {
+    public HomeSliderAdapter(List<LookBook> bannerList) {
         this.bannerList = bannerList;
     }
 
@@ -22,6 +23,6 @@ public class HomeSliderAdapter extends SliderAdapter {
 
     @Override
     public void onBindImageSlide(int position, ImageSlideViewHolder imageSlideViewHolder) {
-        imageSlideViewHolder.bindImageSlide(bannerList.get(position).getImage());
+        imageSlideViewHolder.bindImageSlide(bannerList.get(position).getUrl());
     }
 }
