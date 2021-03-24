@@ -5,19 +5,29 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.qtt.thebarber.Adapter.MyLookBookAdapter;
 import com.qtt.thebarber.Common.Common;
 import com.qtt.thebarber.MainActivity;
+import com.qtt.thebarber.Model.LookBook;
 import com.qtt.thebarber.R;
 import com.qtt.thebarber.UpdateProfileActivity;
 import com.qtt.thebarber.databinding.FragmentProfileBinding;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
@@ -57,6 +67,8 @@ public class ProfileFragment extends Fragment {
 
         binding.tvUserName.setText(Common.currentUser.getName());
         binding.tvUserPhone.setText(Common.currentUser.getAddress());
+        binding.tvUserRank.setText(Common.getRank((int) Math.round(Common.currentUser.getMoney())));
+        getLookBook();
     }
 
     private void initView() {
@@ -68,10 +80,40 @@ public class ProfileFragment extends Fragment {
 
         binding.tvUserName.setText(Common.currentUser.getName());
         binding.tvUserPhone.setText(Common.currentUser.getAddress());
+        binding.tvUserRank.setText(Common.getRank((int) Math.round(Common.currentUser.getMoney())));
+
+        binding.recyclerLookBook.setHasFixedSize(true);
+        binding.recyclerLookBook.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+
+        getLookBook();
 
         binding.btnEdtProfile.setOnClickListener(v -> startActivity(new Intent(getActivity(), UpdateProfileActivity.class)));
 
         binding.btnLogOut.setOnClickListener(v -> logOut());
+    }
+
+    private void getLookBook() {
+
+        FirebaseFirestore.getInstance()
+                .collection("User")
+                .document(Common.currentUser.getPhoneNumber())
+                .collection("LookBook")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<LookBook> lookBookList = new ArrayList<>();
+
+                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            LookBook lookBook = documentSnapshot.toObject(LookBook.class);
+                            lookBookList.add(lookBook);
+                        }
+
+                        MyLookBookAdapter myLookBookAdapter = new MyLookBookAdapter(getContext(), lookBookList);
+                        binding.recyclerLookBook.setAdapter(myLookBookAdapter);
+                    }
+
+
+                }).addOnFailureListener(e -> Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     void logOut() {

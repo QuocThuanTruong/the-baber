@@ -181,6 +181,9 @@ public class HomeActivity extends AppCompatActivity {
         Button btnUpdate = sheetView.findViewById(R.id.btn_update);
         final TextInputEditText edtName = sheetView.findViewById(R.id.edt_name);
         final TextInputEditText edtAddress = sheetView.findViewById(R.id.edt_address);
+        final TextInputEditText edtPhone = sheetView.findViewById(R.id.edt_user_phone);
+
+        edtPhone.setText(phoneNumber);
 
         btnUpdate.setOnClickListener(v -> {
             if (!alertDialog.isShowing())

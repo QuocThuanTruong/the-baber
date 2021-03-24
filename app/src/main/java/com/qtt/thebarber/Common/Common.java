@@ -81,6 +81,30 @@ public class Common {
     public static String currentBookingId = "";
     public static MyNotification currentNotification;
     public static BarberService selectedService = null;
+    public static Integer PRICE_STANDARD_RANK = 200;
+    public static Integer PRICE_BRONZE_RANK = 400;
+    public static Integer PRICE_SILVER_RANK = 600;
+    public static Integer PRICE_GOLD_RANK = 1000;
+
+    public static String STANDARD_RANK = "Standard Rank";
+    public static String BRONZE_RANK = "Bronze Rank";
+    public static String SILVER_RANK = "Silver Rank";
+    public static String GOLD_RANK = "Gold Rank";
+    public static String PLATINUM_RANK = "Platinum Rank";
+
+    public static String getRank(Integer money) {
+        if (PRICE_STANDARD_RANK < money && money<= PRICE_BRONZE_RANK) {
+            return BRONZE_RANK;
+        } else if (PRICE_BRONZE_RANK < money && money<= PRICE_SILVER_RANK) {
+            return SILVER_RANK;
+        } else if (PRICE_SILVER_RANK < money && money<= PRICE_GOLD_RANK) {
+            return GOLD_RANK;
+        } else if (PRICE_GOLD_RANK < money) {
+            return PLATINUM_RANK;
+        }
+
+        return STANDARD_RANK;
+    }
 
     public static String convertTimeSlotToString(int position) {
         switch (position) {

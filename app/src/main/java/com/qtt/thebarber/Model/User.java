@@ -3,6 +3,16 @@ package com.qtt.thebarber.Model;
 public class User {
     private String name, address, phoneNumber, avatar;
 
+    private Double money;
+
+    public Double getMoney() {
+        return money;
+    }
+
+    public void setMoney(Double money) {
+        this.money = money;
+    }
+
     public User() {
     }
 
