@@ -83,7 +83,7 @@ public class MyTimeSlotAdapter extends RecyclerView.Adapter<MyTimeSlotAdapter.Ti
             if (cardViewList.get(position1).getTag() == null)
                 cardViewList.get(position1).setCardBackgroundColor(context.getResources().getColor(R.color.colorCardSelected));
 
-            EventBus.getDefault().postSticky(new EnableNextButtonEvent(4, position1));
+            EventBus.getDefault().post(new EnableNextButtonEvent(4, position1));
         });
     }
 

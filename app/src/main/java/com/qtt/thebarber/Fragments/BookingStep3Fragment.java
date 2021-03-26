@@ -57,7 +57,7 @@ public class BookingStep3Fragment extends Fragment implements ITimeSlotLoadListe
     AlertDialog alertDialog;
     FragmentBookingStep3Binding binding;
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void displayTimeSlot(LoadTimeSlotEvent event){
         if (event.getLoaded()) {
             Calendar date = Calendar.getInstance();

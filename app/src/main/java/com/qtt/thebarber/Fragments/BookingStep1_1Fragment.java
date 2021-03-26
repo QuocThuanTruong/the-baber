@@ -38,7 +38,7 @@ public class BookingStep1_1Fragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void loadServiceDone(ServicesLoadDoneEvent event) {
         myServiceAdapter = new MyServiceAdapter(getContext(), event.getBarberServiceList());
         binding.recyclerServices.setAdapter(myServiceAdapter);

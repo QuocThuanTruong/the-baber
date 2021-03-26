@@ -38,7 +38,9 @@ import com.qtt.thebarber.Common.Common;
 import com.qtt.thebarber.Database.CartDataSource;
 import com.qtt.thebarber.Database.CartDatabase;
 import com.qtt.thebarber.Database.LocalCartDataSource;
+import com.qtt.thebarber.EventBus.ClearCartEvent;
 import com.qtt.thebarber.EventBus.ConfirmBookingEvent;
+import com.qtt.thebarber.Interface.INotificationSendListener;
 import com.qtt.thebarber.Model.BarberService;
 import com.qtt.thebarber.Model.BookingInformation;
 import com.qtt.thebarber.Model.FCMSendData;
@@ -79,7 +81,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class BookingStep4Fragment extends Fragment  {
+public class BookingStep4Fragment extends Fragment implements INotificationSendListener {
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     CartDataSource cartDataSource;
@@ -91,33 +93,13 @@ public class BookingStep4Fragment extends Fragment  {
 
     AlertDialog dialog;
 
+    INotificationSendListener iNotificationSendListener;
+
 
     void confirmBooking() {
         dialog.show();
 
        getAllCart();
-    }
-
-    private void clearCart() {
-        cartDataSource.clearCart(Common.currentUser.getPhoneNumber())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Integer>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(@io.reactivex.annotations.NonNull Integer integer) {
-
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     private void getAllCart() {
@@ -168,7 +150,7 @@ public class BookingStep4Fragment extends Fragment  {
                     barberServiceList.add(Common.selectedService.getUid());
                     bookingInformation.setBarberServiceList(barberServiceList);
 
-                    //send to server
+                    ///AllSalon/Florida/Branch/0n7ikrtgQXW4EXhuJ0qy/Barbers/Nsa4hBFukd8UZYMiRe5y/27_03_2021/13
                     DocumentReference bookingDoc = FirebaseFirestore.getInstance()
                             .collection("AllSalon")
                             .document(Common.cityName)
@@ -179,23 +161,20 @@ public class BookingStep4Fragment extends Fragment  {
                             .collection(Common.simpleDateFormat.format(Common.bookingDate.getTime()))
                             .document(String.valueOf(Common.currentTimeSlot));
 
+                    Log.d("Booking", "getAllCart: " +bookingInformation.getCartItemList().size());
+                    Log.d("Booking", "getAllCart: " +bookingInformation.getTimeSlot());
+                    Log.d("Booking", "getAllCart: " +bookingInformation.getTime());
+
                     bookingDoc.set(bookingInformation)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    addUserBooking(bookingInformation);
-                                    clearCart();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            .addOnCompleteListener(task -> {
+                                addUserBooking(bookingInformation);
+                            }).
+                            addOnFailureListener(e -> Toast.makeText(getContext(), "" + e.getMessage(), Toast.LENGTH_SHORT).show());
                 }, throwable -> {
                     Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                 }));
     }
+
 
     private void addUserBooking(final BookingInformation bookingInformation) {
 
@@ -215,88 +194,78 @@ public class BookingStep4Fragment extends Fragment  {
                 .whereEqualTo("done", false)
                 .limit(1)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.getResult().isEmpty()) {
-                            userBooking.document()
-                                    .set(bookingInformation)
-                                    .addOnSuccessListener(aVoid -> {
-                                        //Create notification
-                                        final MyNotification myNotification = new MyNotification();
-                                        myNotification.setTitle(Common.selectedService.getName());
-                                        myNotification.setContent(new StringBuilder("You have new booking at ").append(Common.convertTimeSlotToString(Common.currentTimeSlot))
-                                                .append(" on ")
-                                                .append(simpleDateFormat.format(Common.bookingDate.getTime())).append(" from user: ").append(Common.currentUser.getName()).toString());
-                                        myNotification.setUid(UUID.randomUUID().toString());
-                                        myNotification.setRead(false);
-                                        myNotification.setServerTimeStamp(Timestamp.now());
-                                        myNotification.setAvatar(Common.selectedService.getAvatar());
+                .addOnCompleteListener(task -> {
+                    if (task.getResult().isEmpty()) {
+                        userBooking.document()
+                                .set(bookingInformation)
+                                .addOnSuccessListener(aVoid -> {
+                                    //Create notification
+                                    final MyNotification myNotification = new MyNotification();
+                                    myNotification.setTitle(Common.selectedService.getName());
+                                    myNotification.setContent(new StringBuilder("You have new booking at ").append(Common.convertTimeSlotToString(Common.currentTimeSlot))
+                                            .append(" on ")
+                                            .append(simpleDateFormat.format(Common.bookingDate.getTime())).append(" from user: ").append(Common.currentUser.getName()).toString());
+                                    myNotification.setUid(UUID.randomUUID().toString());
+                                    myNotification.setRead(false);
+                                    myNotification.setServerTimeStamp(Timestamp.now());
+                                    myNotification.setAvatar(Common.selectedService.getAvatar());
 
-                                        //
-                                        Paper.init(getContext());
-                                        Paper.book().write("UUID_NOTIFICATION", myNotification.getUid());
+                                    //
+                                    Paper.init(getContext());
+                                    Paper.book().write("UUID_NOTIFICATION", myNotification.getUid());
 
-                                        FirebaseFirestore.getInstance()
-                                                .collection("AllSalon")
-                                                .document(Common.cityName)
-                                                .collection("Branch")
-                                                .document(Common.currentSalon.getId())
-                                                .collection("Barbers")
-                                                .document(Common.currentBarber.getBarberId())
-                                                .collection("Notifications")
-                                                .document(myNotification.getUid())
-                                                .set(myNotification)
-                                                .addOnSuccessListener(aVoid1 -> FirebaseFirestore.getInstance()
-                                                        .collection("Tokens")
-                                                        .document(Common.currentBarber.getBarberId())
-                                                        //.whereEqualTo("userPhone", Common.currentBarber.getName())
-                                                       // .limit(1)
-                                                        .get()
+                                    FirebaseFirestore.getInstance()
+                                            .collection("AllSalon")
+                                            .document(Common.cityName)
+                                            .collection("Branch")
+                                            .document(Common.currentSalon.getId())
+                                            .collection("Barbers")
+                                            .document(Common.currentBarber.getBarberId())
+                                            .collection("Notifications")
+                                            .document(myNotification.getUid())
+                                            .set(myNotification)
+                                            .addOnSuccessListener(aVoid1 -> FirebaseFirestore.getInstance()
+                                                    .collection("Tokens")
+                                                    .document(Common.currentBarber.getBarberId())
+                                                    //.whereEqualTo("userPhone", Common.currentBarber.getName())
+                                                   // .limit(1)
+                                                    .get()
 
-                                                        .addOnCompleteListener(task1 -> {
-                                                            if (task1.isSuccessful()) {
-                                                                MyToken myToken = task1.getResult().toObject(MyToken.class);
-                                                               // for (DocumentSnapshot documentSnapshot : task.getResult())
+                                                    .addOnCompleteListener(task1 -> {
+                                                        if (task1.isSuccessful()) {
+                                                            MyToken myToken = task1.getResult().toObject(MyToken.class);
+                                                           // for (DocumentSnapshot documentSnapshot : task.getResult())
 
-                                                                Log.d("AAAAA", myToken.getToken());
+                                                            Log.d("AAAAA", myToken.getToken());
 
-                                                                FCMSendData sendRequest = new FCMSendData();
-                                                                Map<String, String> dataSend = new HashMap<>();
-                                                                dataSend.put(Common.TITLE_KEY, "New Booking");
-                                                                dataSend.put(Common.CONTENT_KEY, "You have a new booking: " + Common.selectedService.getName() +", from user: " + Common.currentUser.getName());
+                                                            FCMSendData sendRequest = new FCMSendData();
+                                                            Map<String, String> dataSend = new HashMap<>();
+                                                            dataSend.put(Common.TITLE_KEY, "New Booking");
+                                                            dataSend.put(Common.CONTENT_KEY, "You have a new booking: " + Common.selectedService.getName() +", from user: " + Common.currentUser.getName());
 
-                                                                sendRequest.setData(dataSend);
-                                                                sendRequest.setTo(myToken.getToken());
+                                                            sendRequest.setData(dataSend);
+                                                            sendRequest.setTo(myToken.getToken());
 
-                                                                compositeDisposable.add(ifcmApi.sendNotification(sendRequest)
-                                                                        .subscribeOn(Schedulers.io())
-                                                                        .observeOn(AndroidSchedulers.mainThread()) //mainThread()
-                                                                        .subscribe(fcmResponse -> {
-                                                                            dialog.dismiss();
-                                                                            Log.d("AAAAA", "Success: ");
-                                                                            addToCalendar(Common.bookingDate, Common.convertTimeSlotToString(Common.currentTimeSlot));
-                                                                            getActivity().finish();
-                                                                            Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
-                                                                        }, throwable -> {
-                                                                            Log.d("AAAAA", "onError: " + throwable.getMessage());
-                                                                            addToCalendar(Common.bookingDate, Common.convertTimeSlotToString(Common.currentTimeSlot));
-                                                                            getActivity().finish();
-                                                                            Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
-                                                                        }));
-                                                            }
-                                                        }));
-                                    }).addOnFailureListener(e -> {
-                                        if (dialog.isShowing())
-                                            dialog.dismiss();
-                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    });
-                        } else {
-                            if (dialog.isShowing())
-                                dialog.dismiss();
-                            getActivity().finish();
-                            Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
-                        }
+                                                            compositeDisposable.add(ifcmApi.sendNotification(sendRequest)
+                                                                    .subscribeOn(Schedulers.io())
+                                                                    .observeOn(AndroidSchedulers.mainThread()) //mainThread()
+                                                                    .subscribe(fcmResponse -> {
+                                                                        dialog.dismiss();
+
+                                                                        iNotificationSendListener.onNotificationSend(true);
+                                                                    }));
+                                                        }
+                                                    }));
+                                }).addOnFailureListener(e -> {
+                                    if (dialog.isShowing())
+                                        dialog.dismiss();
+                                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        if (dialog.isShowing())
+                            dialog.dismiss();
+                        getActivity().finish();
+                        Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -392,7 +361,7 @@ public class BookingStep4Fragment extends Fragment  {
     }
 
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void confirmBookingReceiver(ConfirmBookingEvent event){
         if (event.getConfirm()) {
             setData();
@@ -431,6 +400,8 @@ public class BookingStep4Fragment extends Fragment  {
 
         ifcmApi = RetrofitClient.getInstance().create(IFCMApi.class);
 
+        iNotificationSendListener = this;
+
         simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         dialog = new SpotsDialog.Builder().setContext(getContext()).setCancelable(false).build();
@@ -467,4 +438,36 @@ public class BookingStep4Fragment extends Fragment  {
         return view;
     }
 
+    @Override
+    public void onNotificationSend(boolean isSent) {
+        if (isSent) {
+            addToCalendar(Common.bookingDate, Common.convertTimeSlotToString(Common.currentTimeSlot));
+            Toast.makeText(getActivity(), "Success!", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+            clearCart();
+            compositeDisposable.clear();
+        }
+    }
+
+    private void clearCart() {
+        cartDataSource.clearCart(Common.currentUser.getPhoneNumber())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Integer>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(@io.reactivex.annotations.NonNull Integer integer) {
+
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 }

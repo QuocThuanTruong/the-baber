@@ -153,7 +153,7 @@ public class ShoppingFragment extends Fragment implements IShoppingItemsLoadList
         return view;
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void countCartItem(CountCartEvent event) {
         //DatabaseUtils.countItemInCart(cartDatabase, this);
 

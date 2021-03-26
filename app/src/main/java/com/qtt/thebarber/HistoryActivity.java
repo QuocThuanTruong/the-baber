@@ -68,12 +68,12 @@ public class HistoryActivity extends AppCompatActivity {
                             bookingInformations.add(bookingInformation);
                         }
 
-                        EventBus.getDefault().postSticky(new HistoryLoadEvent(true, bookingInformations));
+                        EventBus.getDefault().post(new HistoryLoadEvent(true, bookingInformations));
                     }
                     dialog.dismiss();
                 })
                 .addOnFailureListener(e -> {
-                    EventBus.getDefault().postSticky(new HistoryLoadEvent(false, e.getMessage()));
+                    EventBus.getDefault().post(new HistoryLoadEvent(false, e.getMessage()));
                     dialog.dismiss();
                 });
     }
@@ -100,7 +100,7 @@ public class HistoryActivity extends AppCompatActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHistoryLoadd(HistoryLoadEvent event) {
         if (event.getSuccess()) {
             MyHistoryAdapter myHistoryAdapter = new MyHistoryAdapter(this, event.getBookingInformationList());

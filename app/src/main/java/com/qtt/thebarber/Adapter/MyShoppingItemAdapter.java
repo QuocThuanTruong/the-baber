@@ -131,7 +131,7 @@ public class MyShoppingItemAdapter extends RecyclerView.Adapter<MyShoppingItemAd
                                         }));
                             }
 
-                            EventBus.getDefault().postSticky(new CountCartEvent(true));
+                            EventBus.getDefault().post(new CountCartEvent(true));
                         }
 
                         @Override
@@ -144,7 +144,7 @@ public class MyShoppingItemAdapter extends RecyclerView.Adapter<MyShoppingItemAd
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(() -> {
                                             Toast.makeText(context, "Added to Cart!", Toast.LENGTH_SHORT).show();
-                                            EventBus.getDefault().postSticky(new CountCartEvent(true));
+                                            EventBus.getDefault().post(new CountCartEvent(true));
                                         }, throwable -> {
                                             Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                         }));

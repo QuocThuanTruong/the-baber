@@ -44,6 +44,7 @@ import com.qtt.thebarber.Common.Common;
 import com.qtt.thebarber.Database.CartDataSource;
 import com.qtt.thebarber.Database.CartDatabase;
 import com.qtt.thebarber.Database.LocalCartDataSource;
+import com.qtt.thebarber.EventBus.ClearCartEvent;
 import com.qtt.thebarber.HistoryActivity;
 import com.qtt.thebarber.Interface.IBannerLoadListener;
 import com.qtt.thebarber.Interface.IBookingInfoChangeListener;
@@ -55,6 +56,10 @@ import com.qtt.thebarber.Model.BookingInformation;
 import com.qtt.thebarber.Model.LookBook;
 import com.qtt.thebarber.NotificationActivity;
 import com.qtt.thebarber.Service.PicassoImageLoadingService;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -117,7 +122,6 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
         });
 
     }
-
 
     void openCart() {
         startActivity(new Intent(getActivity(), CartActivity.class));
@@ -195,6 +199,8 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
             Toast.makeText(getActivity(), "Current booking must not be empty!", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
     private void deleteBookingFromUser(final boolean isChange) {
@@ -372,6 +378,8 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
                     public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                         if (!e.getMessage().contains("empty")) {
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            binding.notificationBadge.setVisibility(View.GONE);
                         }
 
                     }
@@ -382,9 +390,11 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
     public void onResume() {
         super.onResume();
         loadUserBooking();
-        countCartItem();
         loadNotification();
+        countCartItem();
     }
+
+
 
     private void loadUserBooking() {
         CollectionReference bookingRef = FirebaseFirestore.getInstance()
@@ -561,4 +571,17 @@ public class HomeFragment extends Fragment implements IBannerLoadListener, ILook
             binding.tvNotificationBadge.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+
+
 }

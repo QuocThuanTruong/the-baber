@@ -70,7 +70,7 @@ public class MyBarberAdapter extends RecyclerView.Adapter<MyBarberAdapter.Barber
                 cardViewList.get(position).setCardBackgroundColor(context.getResources().getColor(R.color.colorCardSelected));
 
                 //send flag to Booking Activity
-                EventBus.getDefault().postSticky(new EnableNextButtonEvent(3, barberList.get(position)));
+                EventBus.getDefault().post(new EnableNextButtonEvent(3, barberList.get(position)));
             }
         });
     }
@@ -94,7 +94,7 @@ public class MyBarberAdapter extends RecyclerView.Adapter<MyBarberAdapter.Barber
             binding = LayoutBarberBinding.bind(itemView);
 
             binding.btnViewBarberProfile.setOnClickListener(v -> {
-                EventBus.getDefault().postSticky(new ShowBarberProfileEvent(barberList.get(getAdapterPosition())));
+                EventBus.getDefault().post(new ShowBarberProfileEvent(barberList.get(getAdapterPosition())));
             });
 
             itemView.setOnClickListener(this);

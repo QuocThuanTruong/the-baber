@@ -34,7 +34,7 @@ public class BookingStep2Fragment extends Fragment {
     FragmentBookingStep2Binding binding;
 
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void barbersReceiver(BarberDoneEvent event) {
             MyBarberAdapter myBarberAdapter = new MyBarberAdapter(getActivity(), event.getBarbers());
             binding.recyclerBarber.setAdapter(myBarberAdapter);

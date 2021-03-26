@@ -69,6 +69,7 @@ public class Common {
     public static final String RATING_SALON_NAME = "ratingSalonName";
     public static final String RATING_BARBER_ID = "ratingBarberId";
     public static final Integer MAX_NOTI_PER_LOAD = 10;
+    public static final int REQUEST_CLEAR_CART = 126;
     public static User currentUser;
     public static Salon currentSalon = null;
     public static int currentStep = 0;
@@ -91,6 +92,7 @@ public class Common {
     public static String SILVER_RANK = "Silver Rank";
     public static String GOLD_RANK = "Gold Rank";
     public static String PLATINUM_RANK = "Platinum Rank";
+    public static boolean clearCart = false;
 
     public static String getRank(Integer money) {
         if (PRICE_STANDARD_RANK < money && money<= PRICE_BRONZE_RANK) {

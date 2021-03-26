@@ -118,11 +118,11 @@ public class BookingActivity extends AppCompatActivity implements IBarberService
     }
 
     private void confirmBooking() {
-        EventBus.getDefault().postSticky(new ConfirmBookingEvent(true));
+        EventBus.getDefault().post(new ConfirmBookingEvent(true));
     }
 
     private void loadSlotTimeOfBarber(String barberId) {
-        EventBus.getDefault().postSticky(new LoadTimeSlotEvent(true));
+        EventBus.getDefault().post(new LoadTimeSlotEvent(true));
     }
 
     ///AllSalon/Florida/Branch/0n7ikrtgQXW4EXhuJ0qy/Barbers/
@@ -151,7 +151,7 @@ public class BookingActivity extends AppCompatActivity implements IBarberService
 //                                Intent intent = new Intent(Common.KEY_LOAD_BARBERS_DONE);
 //                                intent.putParcelableArrayListExtra(Common.KEY_BARBERS_STORED, (ArrayList<? extends Parcelable>) barberList);
 //                                localBroadcastManager.sendBroadcast(intent);
-                                EventBus.getDefault().postSticky(new BarberDoneEvent(barberList));
+                                EventBus.getDefault().post(new BarberDoneEvent(barberList));
 
                                 alertDialog.dismiss();
                             }
@@ -165,14 +165,14 @@ public class BookingActivity extends AppCompatActivity implements IBarberService
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void showBarberProfile(ShowBarberProfileEvent event) {
         Common.currentBarber = event.getBarber();
         BarberProfileFragment barberProfileFragment = BarberProfileFragment.getInstance();
         barberProfileFragment.show(getSupportFragmentManager(), "BarberProfile");
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void nextButtonReceiver(EnableNextButtonEvent event) {
 
         int step = event.getStep();
@@ -299,7 +299,7 @@ public class BookingActivity extends AppCompatActivity implements IBarberService
 
     @Override
     public void onBarberServicesLoadSuccess(List<BarberService> barberServicesList) {
-        EventBus.getDefault().postSticky(new ServicesLoadDoneEvent(barberServicesList));
+        EventBus.getDefault().post(new ServicesLoadDoneEvent(barberServicesList));
     }
 
     @Override
