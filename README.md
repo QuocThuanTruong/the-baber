@@ -79,8 +79,11 @@ After that sending notification to staff app.
 ### Staff app
 <img src="https://github.com/QuocThuanTruong/TheBarber/blob/master/Img/book_7.png" width="310"/>
 </div>
-
 <br/>
+
+### Rating screen after booked barber finish service
+
+<img src="https://github.com/QuocThuanTruong/TheBarber/blob/master/Img/rating.png" width="310"/>
 
 # Shopping Screen & Cart Screen
 
