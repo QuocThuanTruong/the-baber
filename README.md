@@ -13,6 +13,7 @@ The barber is is an android application of a hair salon series, that helps peopl
 (including staff's application)
 
 >  **Java** · **Firebase services** · **RxJava** · **Retrofit client** . **Room Database**
+
 >  **The barber staff**: ***https://github.com/QuocThuanTruong/TheBarberStaff***
 
 <br/>
