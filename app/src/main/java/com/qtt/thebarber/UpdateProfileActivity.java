@@ -56,6 +56,10 @@ public class UpdateProfileActivity extends AppCompatActivity implements IUpdateP
         super.onCreate(savedInstanceState);
         binding = ActivityUpdateProfileBinding.inflate(getLayoutInflater());
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(this.getResources().getColor(R.color.colorAccent2));
+        }
+
         dialog = new SpotsDialog.Builder()
                 .setCancelable(false)
                 .setContext(this)

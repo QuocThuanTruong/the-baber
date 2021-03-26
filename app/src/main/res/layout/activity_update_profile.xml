@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_baseline_arrow_back_ios_24"
-                        app:tint="@color/colorPrimary"
+                        app:tint="@android:color/white"
                         android:background="@android:color/transparent">
 
                     </ImageButton>
@@ -53,7 +53,7 @@
                         android:layout_marginLeft="4dp"
                         android:fontFamily="@font/gilroy_semibold"
                         android:text="Profile"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@android:color/white"
                         android:textSize="24sp" />
 
                 </LinearLayout>
