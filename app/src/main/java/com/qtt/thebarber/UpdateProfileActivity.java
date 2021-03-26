@@ -29,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.qtt.thebarber.Common.Common;
+import com.qtt.thebarber.Interface.IUpdateProfileListener;
 import com.qtt.thebarber.databinding.ActivityUpdateProfileBinding;
 import com.squareup.picasso.Picasso;
 
@@ -36,16 +37,19 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import dmax.dialog.SpotsDialog;
 
-public class UpdateProfileActivity extends AppCompatActivity {
+public class UpdateProfileActivity extends AppCompatActivity implements IUpdateProfileListener {
     ActivityUpdateProfileBinding binding;
     private static final int MY_CAMERA_REQUEST_CODE = 911;
     Uri fileUri;
     AlertDialog dialog;
     StorageReference storageReference;
+    IUpdateProfileListener iUpdateProfileListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        iUpdateProfileListener = this;
+
         binding.imgBack.setOnClickListener(v -> finish());
 
         binding.edtUserName.setText(Common.currentUser.getName());
@@ -86,38 +92,25 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
 
         binding.btnUpdate.setOnClickListener(v -> {
-            dialog.show();
-            if (!Common.currentUser.getName().equals(binding.edtUserName.getText().toString())) {
-                Common.currentUser.setName(binding.edtUserName.getText().toString());
 
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("name", binding.edtUserName.getText().toString());
+            updateData.put("address", binding.edtUserAddress.getText().toString());
+
+                dialog.show();
                 FirebaseFirestore.getInstance().collection("User")
                         .document(Common.currentUser.getPhoneNumber())
-                        .update("name", binding.edtUserName.getText().toString())
+                        .update(updateData)
                         .addOnCompleteListener(task13 -> {
                             Log.d("Update_profile", "update name: successfully");
-                        }).addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
 
-            if (!Common.currentUser.getAddress().equals(binding.edtUserAddress.getText().toString())) {
-                Common.currentUser.setAddress(binding.edtUserAddress.getText().toString());
+                            upLoadPicture(fileUri);
 
-                FirebaseFirestore.getInstance().collection("User")
-                        .document(Common.currentUser.getPhoneNumber())
-                        .update("address", binding.edtUserAddress.getText().toString())
-                        .addOnCompleteListener(task13 -> {
-                            Log.d("Update_profile", "update address: successfully");
-                        }).addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-
-            if (fileUri == null || Common.currentUser.getAvatar().isEmpty()) {
-                upLoadPicture(fileUri);
-            }
-
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            finish();
+                            dialog.dismiss();
+                        }).addOnFailureListener(e -> {
+                            iUpdateProfileListener.OnUpdateProfileFailed(e.getMessage());
+                            dialog.dismiss();
+                        });
         });
     }
 
@@ -143,20 +136,24 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 if (task12.isSuccessful()) {
                     String url = task12.getResult().toString().substring(0, task12.getResult().toString().indexOf("&token"));
                     Log.d("AAAAA", "download: " + url);
-                    dialog.dismiss();
 
                     FirebaseFirestore.getInstance().collection("User")
                             .document(Common.currentUser.getPhoneNumber())
                             .update("avatar", url)
                             .addOnCompleteListener(task13 -> {
-                                Log.d("Update_profile", "upLoadPicture: successfully");
+                                Log.d("Update_profile", "upLoadPicture: successfully " + url);
                                 Common.currentUser.setAvatar(url);
-                            }).addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                               iUpdateProfileListener.onUpdateProfileSuccess(true);
+                                dialog.dismiss();
+                            }).addOnFailureListener(e -> {iUpdateProfileListener.OnUpdateProfileFailed(e.getMessage());
+                            dialog.dismiss();});
                 }
             }).addOnFailureListener(e -> {
                 dialog.dismiss();
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             });
+        } else {
+            iUpdateProfileListener.onUpdateProfileSuccess(true);
         }
     }
 
@@ -222,5 +219,20 @@ public class UpdateProfileActivity extends AppCompatActivity {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    @Override
+    public void onUpdateProfileSuccess(boolean isSuccess) {
+        if (isSuccess) {
+            Common.currentUser.setName(binding.edtUserName.getText().toString());
+            Common.currentUser.setAddress(binding.edtUserAddress.getText().toString());
+
+            finish();
+        }
+    }
+
+    @Override
+    public void OnUpdateProfileFailed(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,6 +23,7 @@ import com.qtt.thebarber.Common.Common;
 import com.qtt.thebarber.Common.SpacesItemDecoration;
 import com.qtt.thebarber.MainActivity;
 import com.qtt.thebarber.Model.LookBook;
+import com.qtt.thebarber.Model.User;
 import com.qtt.thebarber.R;
 import com.qtt.thebarber.UpdateProfileActivity;
 import com.qtt.thebarber.databinding.FragmentProfileBinding;
@@ -30,9 +32,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+
 public class ProfileFragment extends Fragment {
 
     FragmentProfileBinding binding;
+    AlertDialog dialog;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -63,7 +68,8 @@ public class ProfileFragment extends Fragment {
         if (Common.currentUser.getAvatar().isEmpty()) {
             binding.imgUserAvatar.setImageDrawable(getContext().getResources().getDrawable(R.drawable.user_avatar));
         } else {
-            Picasso.get().load(Common.currentUser.getAvatar()).error(R.drawable.user_avatar).into(binding.imgUserAvatar);
+            Log.d("Update_profile", "onResume: fragment profile " + Common.currentUser.getAvatar());
+          Picasso.get().load(Common.currentUser.getAvatar()).error(R.drawable.user_avatar).into(binding.imgUserAvatar);
         }
 
         binding.tvUserName.setText(Common.currentUser.getName());
@@ -73,6 +79,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initView() {
+        dialog = new SpotsDialog.Builder().setContext(getContext()).setCancelable(false).build();
+
         if (Common.currentUser.getAvatar().isEmpty()) {
             binding.imgUserAvatar.setImageDrawable(getContext().getResources().getDrawable(R.drawable.user_avatar));
         } else {
