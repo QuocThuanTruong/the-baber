@@ -127,5 +127,5 @@ Showing all user's information (rank is calculated by user's money has paid), in
 
 The Barber is available under the
 [MIT license](https://opensource.org/licenses/MIT). See
-[LICENSE](https://github.com/QuocThuanTruong/AdoptMe/blob/add-license-1/LICENSE) for the full
+[LICENSE](https://github.com/QuocThuanTruong/TheBarber/blob/master/LICENSE) for the full
 license text.
