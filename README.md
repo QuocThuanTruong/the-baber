@@ -128,6 +128,10 @@ Showing all user's information (rank is calculated by user's money has paid), in
 
 <br/>
 
+# Reference
+
+Barber booking application of EDMT Dev.
+
 # License
 
 The Barber is available under the
